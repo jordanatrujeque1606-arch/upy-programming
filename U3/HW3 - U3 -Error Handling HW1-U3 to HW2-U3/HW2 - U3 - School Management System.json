@@ -1,0 +1,46 @@
+{
+  "version": "2.0",
+  "timestamp": "2026-08-04T03:08:55.660Z",
+  "theme": "upy",
+  "reportData": [
+    {
+      "id": 1785812561416,
+      "type": "header",
+      "content": "",
+      "hData": {
+        "name": "Jordana Trujeque López",
+        "group": "2A",
+        "subject": "programming",
+        "prof": "Jorge Pavia",
+        "inst": "Universidad Politécnica de Yucatán",
+        "term": "2",
+        "date": "2026-08-03"
+      }
+    },
+    {
+      "id": 1785812612530,
+      "type": "title",
+      "content": "HW2 - U3 - School Management System"
+    },
+    {
+      "id": 1785812846386,
+      "type": "code",
+      "content": "# ==========================================\n# INPUT / DATA STRUCTURES\n# ==========================================\nmaterias = ('Matemáticas', 'Programación', 'Inglés')\n\nusuarios = {\n    'jperez': {'password': '1234', 'rol': 'alumno', 'nombre': 'Juan Pérez'},\n    'amartin': {'password': '1234', 'rol': 'alumno', 'nombre': 'Ana Martín'},\n    'cgomez': {'password': '1234', 'rol': 'alumno', 'nombre': 'Carlos Gómez'},\n    'lgarza': {'password': '1234', 'rol': 'alumno', 'nombre': 'Lucía Garza'},\n    'rtorres': {'password': '1234', 'rol': 'alumno', 'nombre': 'Raúl Torres'},\n    'mrodriguez': {'password': '1234', 'rol': 'alumno', 'nombre': 'María Rodríguez'},\n    'mlopez': {'password': '1234', 'rol': 'maestro', 'nombre': 'María López'},\n    'rgarcia': {'password': '1234', 'rol': 'coordinador', 'nombre': 'Rosa García'}\n}\n\ncalificaciones = {\n    'jperez': {'Matemáticas': 8.5, 'Programación': 9.0, 'Inglés': 7.5},\n    'amartin': {'Matemáticas': 9.0, 'Programación': 8.0, 'Inglés': 8.5},\n    'cgomez': {'Matemáticas': 7.0, 'Programación': 7.5, 'Inglés': 8.0},\n    'lgarza': {'Matemáticas': 9.5, 'Programación': 9.0, 'Inglés': 9.5},\n    'rtorres': {'Matemáticas': 6.0, 'Programación': 6.5, 'Inglés': 7.0},\n    'mrodriguez': {'Matemáticas': 8.0, 'Programación': 8.5, 'Inglés': 9.0}\n}\n\n# ==========================================\n# PROCESS & LOGIN FLOW\n# ==========================================\nusuario_actual = None\nrol_actual = None\nnombre_actual = None\n\n# Validate login with a while loop (unlimited attempts)\nwhile usuario_actual is None:\n    try:\n        username_input = input(\"Usuario: \").strip()\n        password_input = input(\"Contraseña: \").strip()\n        \n        if not username_input or not password_input:\n            raise ValueError(\"El usuario y la contraseña no pueden estar vacíos.\")\n\n        if username_input in usuarios and usuarios[username_input]['password'] == password_input:\n            usuario_actual = username_input\n            rol_actual = usuarios[username_input]['rol']\n            nombre_actual = usuarios[username_input]['nombre']\n            print(f\"Bienvenido, {nombre_actual} ({rol_actual})\")\n        else:\n            print(\"Credenciales incorrectas. Intente de nuevo.\")\n            \n    except ValueError as e:\n        print(f\"Error de entrada: {e}\")\n    except Exception as e:\n        print(f\"Ocurrió un error inesperado durante el inicio de sesión: {e}\")\n\n# ==========================================\n# BRANCHING BY ROLE\n# ==========================================\ntry:\n    if rol_actual == 'alumno':\n        print(f\"\\nBoleta de {nombre_actual}\")\n        \n        aprobadas = set()\n        pendientes = set()\n        \n        for materia in materias:\n            cal = calificaciones[usuario_actual].get(materia, 0.0)\n            print(f\"{materia}: {cal}\")\n            if cal >= 8.0:\n                aprobadas.add(materia)\n            else:\n                pendientes.add(materia)\n                \n        print(f\"Materias aprobadas: {aprobadas}\")\n        print(f\"Materias pendientes: {pendientes}\")\n\n    elif rol_actual == 'maestro':\n        print(\"\\n--- Lista de Alumnos ---\")\n        for uname, info in usuarios.items():\n            if info['rol'] == 'alumno':\n                print(f\"- Usuario: {uname} | Nombre: {info['nombre']}\")\n                \n        alumno_elegido = input(\"\\nAlumno (username): \").strip()\n        materia_elegida = input(\"Materia: \").strip()\n        \n        # Validación robusta para evitar caídas al convertir texto a número flotante\n        entrada_cal = input(\"Nueva calificación: \").strip()\n        try:\n            nueva_cal = float(entrada_cal)\n        except ValueError:\n            raise ValueError(\"La calificación ingresada debe ser un número válido (ej. 8.5).\")\n        \n        if not (0.0 <= nueva_cal <= 10.0):\n            raise ValueError(\"La calificación debe estar en un rango de 0.0 a 10.0.\")\n        \n        if alumno_elegido in calificaciones and materia_elegida in materias:\n            calificaciones[alumno_elegido][materia_elegida] = nueva_cal\n            print(\"Calificación actualizada exitosamente.\")\n        else:\n            print(\"Error: El username del alumno o la materia ingresados no son válidos.\")\n\n    elif rol_actual == 'coordinador':\n        print(\"\\n--- REPORTE DE COORDINACIÓN (Read-Only) ---\")\n        \n        print(\"\\n1. Lista de Profesores:\")\n        for uname, info in usuarios.items():\n            if info['rol'] == 'maestro':\n                print(f\"- {info['nombre']} ({uname})\")\n                \n        print(\"\\n2. Lista de Materias:\")\n        for materia in materias:\n            print(f\"- {materia}\")\n            \n        print(\"\\n3. Lista de Alumnos y Calificaciones:\")\n        for uname, info in usuarios.items():\n            if info['rol'] == 'alumno':\n                print(f\"\\nAlumno: {info['nombre']} ({uname})\")\n                for materia in materias:\n                    cal = calificaciones.get(uname, {}).get(materia, \"N/A\")\n                    print(f\"    {materia}: {cal}\")\n\nexcept ValueError as e:\n    print(f\"Error de validación: {e}\")\nexcept KeyError as e:\n    print(f\"Error en las estructuras de datos (clave faltante): {e}\")\nexcept Exception as e:\n    print(f\"Ocurrió un error inesperado durante la ejecución del sistema: {e}\")\n\nfinally:\n    print(\"\\nSesión finalizada.\")"
+    },
+    {
+      "id": 1785812866561,
+      "type": "ai",
+      "content": "",
+      "aiUsed": "no",
+      "aiData": {
+        "name": "Jordana Trujeque López",
+        "aiTool": "",
+        "date": "",
+        "purpose": "",
+        "prompt": "",
+        "attachments": "",
+        "rawResponse": ""
+      }
+    }
+  ]
+}

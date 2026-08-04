@@ -1,0 +1,46 @@
+{
+  "version": "2.0",
+  "timestamp": "2026-08-04T03:04:20.946Z",
+  "theme": "upy",
+  "reportData": [
+    {
+      "id": 1785812561416,
+      "type": "header",
+      "content": "",
+      "hData": {
+        "name": "Jordana Trujeque López",
+        "group": "2A",
+        "subject": "programming",
+        "prof": "Jorge Pavia",
+        "inst": "Universidad Politécnica de Yucatán",
+        "term": "2",
+        "date": ""
+      }
+    },
+    {
+      "id": 1785812612530,
+      "type": "title",
+      "content": "HW1 - U3 - Spanish Verb Conjugator"
+    },
+    {
+      "id": 1785812625521,
+      "type": "code",
+      "content": "try:\n    # Solicitar al usuario un verbo regular en español que termine en -ar, -er o -ir.\n    verbo = input(\"Ingrese verbo: \").strip().lower()\n\n    # Estructuras de datos requeridas (adaptadas a español latinoamericano: excluyendo 'vosotros')\n    pronombres = ['yo', 'tu', 'el', 'nosotros', 'ustedes', 'ellos']\n    terminaciones = {\n        'ar': ['o', 'as', 'a', 'amos', 'an', 'an'],\n        'er': ['o', 'es', 'e', 'emos', 'en', 'en'],\n        'ir': ['o', 'es', 'e', 'imos', 'en', 'en']\n    }\n\n    # Validar que el verbo tenga al menos 3 caracteres para evitar errores de slicing\n    if len(verbo) < 3:\n        raise ValueError(\"El verbo ingresado es demasiado corto.\")\n\n    # Obtener la raíz (el verbo sin las últimas 2 letras) y el sufijo (las últimas 2 letras)\n    raiz = verbo[:-2]\n    sufijo = verbo[-2:]\n\n    # Validar que el sufijo sea válido (-ar, -er, -ir)\n    if sufijo not in terminaciones:\n        raise KeyError(f\"El sufijo '-{sufijo}' no es válido. Debe terminar en -ar, -er o -ir.\")\n\n    # Buscar la lista de terminaciones correspondiente en el diccionario\n    lista_terminaciones = terminaciones[sufijo]\n\n    # Iterar a través de los pronombres e imprimir cada conjugación correspondiente usando concordancia de índices\n    for i in range(len(pronombres)):\n        conjugacion = raiz + lista_terminaciones[i]\n        print(f\"{pronombres[i]} {conjugacion}\")\n\nexcept ValueError as e:\n    print(f\"Error de valor: {e}\")\n\nexcept KeyError as e:\n    print(f\"Error de formato: {e}\")\n\nexcept Exception as e:\n    print(f\"Ocurrió un error inesperado: {e}\")\n\nfinally:\n    print(\"Ejecución del programa finalizada.\")"
+    },
+    {
+      "id": 1785812643092,
+      "type": "ai",
+      "content": "",
+      "aiUsed": "no",
+      "aiData": {
+        "name": "Jordana Trujeque",
+        "aiTool": "",
+        "date": "",
+        "purpose": "",
+        "prompt": "",
+        "attachments": "",
+        "rawResponse": ""
+      }
+    }
+  ]
+}
